@@ -6,7 +6,7 @@
 /*   By: nlaerema <nlaerema@student.42lehavre.fr>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 10:58:17 by nlaerema          #+#    #+#             */
-/*   Updated: 2023/12/18 14:53:35 by nlaerema         ###   ########.fr       */
+/*   Updated: 2023/12/18 19:36:48 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,12 @@
 # include <string.h>
 # include <unistd.h>
 # include <sys/time.h>
+# include <sys/wait.h>
+# include <fcntl.h>
 # include <pthread.h>
+# include <semaphore.h>
 # include <limits.h>
+# include <signal.h>
 # include <errno.h>
 
 # define INFINI_CREDIT -1
@@ -47,37 +51,30 @@ typedef struct s_philo_arg
 	long	eat_credit;
 }	t_philo_arg;
 
-typedef struct s_fork
-{
-	pthread_mutex_t	mutex;
-	t_bool			available;
-}	t_fork;
-
 typedef struct s_philo
 {
-	t_fork		right_fork;
-	t_fork		*left_fork;
 	t_uint		id;
+	sem_t		*fork;
+	sem_t		*print;
 	long		start_time;
 	long		last_eat_time;
-	t_bool		is_end;
 	t_philo_arg	arg;
 }	t_philo;
 
-void	fork_toggle_available(t_fork *fork);
-t_bool	take_fork(t_philo *philo, t_fork *fork);
-void	*routine(void *ptr);
+t_bool	take_fork(t_philo *philo);
+
+void	routine(t_philo *philo);
 
 int		run_simulation(t_philo_arg *arg);
 
-void	init_philo(t_philo *philo, t_philo_arg *arg, t_uint id);
 int		init_arg(t_philo_arg *arg, int argc, char **argv);
+void	init_philo(t_philo *philo, t_philo_arg *arg, t_uint id);
 
 long	get_time(void);
 long	get_timestamp(t_philo *philo);
 long	get_time_it_die(t_philo *philo);
 
-t_bool	is_end(t_philo *philo);
+t_bool	is_dead(t_philo *philo);
 void	philo_wait(t_philo *philo, long wait_time);
 void	print_state(t_philo *philo, char *str);
 

@@ -6,13 +6,13 @@
 /*   By: nlaerema <nlaerema@student.42lehavre.fr>	+#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 10:58:17 by nlaerema          #+#    #+#             */
-/*   Updated: 2023/12/18 14:53:01 by nlaerema         ###   ########.fr       */
+/*   Updated: 2023/12/18 19:28:44 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-static int	_get_arg(long *l, char *arg)
+static int	get_arg(long *l, char *arg)
 {
 	char	*end;
 
@@ -22,28 +22,22 @@ static int	_get_arg(long *l, char *arg)
 	return (EXIT_SUCCESS);
 }
 
-static void	_init_fork(t_fork *fork)
-{
-	pthread_mutex_init(&fork->mutex, NULL);
-	fork->available = FT_TRUE;
-}
-
 int	init_arg(t_philo_arg *arg, int argc, char **argv)
 {
 	if (argc < 4 || 5 < argc)
 		return (EXIT_FAILURE);
 	memset(arg, 0, sizeof(t_philo_arg));
-	if (_get_arg(&arg->philo_count, argv[0]))
+	if (get_arg(&arg->philo_count, argv[0]))
 		return (EXIT_FAILURE);
-	if (_get_arg(&arg->time_to_die, argv[1]))
+	if (get_arg(&arg->time_to_die, argv[1]))
 		return (EXIT_FAILURE);
-	if (_get_arg(&arg->time_to_eat, argv[2]))
+	if (get_arg(&arg->time_to_eat, argv[2]))
 		return (EXIT_FAILURE);
-	if (_get_arg(&arg->time_to_sleep, argv[3]))
+	if (get_arg(&arg->time_to_sleep, argv[3]))
 		return (EXIT_FAILURE);
 	if (argc == 5)
 	{
-		if (_get_arg(&arg->eat_credit, argv[4]))
+		if (get_arg(&arg->eat_credit, argv[4]))
 			return (EXIT_FAILURE);
 	}
 	else
@@ -53,11 +47,12 @@ int	init_arg(t_philo_arg *arg, int argc, char **argv)
 
 void	init_philo(t_philo *philo, t_philo_arg *arg, t_uint id)
 {
-	_init_fork(&philo->right_fork);
-	philo->left_fork = NULL;
+	philo->fork = sem_open("fork", O_CREAT, 0644, arg->philo_count);
+	philo->print = sem_open("print", O_CREAT, 0644, 1);
 	philo->id = id;
 	philo->start_time = 0;
 	philo->last_eat_time = 0;
-	philo->is_end = FT_FALSE;
 	philo->arg = *arg;
+	sem_unlink("fork");
+	sem_unlink("print");
 }

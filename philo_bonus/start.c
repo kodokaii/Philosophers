@@ -6,45 +6,40 @@
 /*   By: nlaerema <nlaerema@student.42lehavre.fr>	+#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 10:58:17 by nlaerema          #+#    #+#             */
-/*   Updated: 2023/12/18 15:20:58 by nlaerema         ###   ########.fr       */
+/*   Updated: 2023/12/18 20:40:19 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-static void	_run_philo(t_philo *philo, t_philo_arg *arg, t_fork *first_fork)
+static void	_run_philo(t_philo *philo)
 {
-	pthread_t	philo_thread;
-	t_philo		*next_philo;
+	pid_t	pid;
 
-	if (philo->id <= arg->philo_count)
+	if (philo->id <= philo->arg.philo_count)
 	{
-		if (philo->id < arg->philo_count)
+		pid = fork();
+		if (pid == 0)
 		{
-			next_philo = malloc(sizeof(t_philo));
-			init_philo(next_philo, arg, philo->id + 1);
-			philo->left_fork = &next_philo->right_fork;
-			pthread_create(&philo_thread, NULL, &routine, philo);
-			usleep(100);
-			_run_philo(next_philo, arg, first_fork);
+			routine(philo);
+			exit(EXIT_SUCCESS);
+		}
+		if (philo->id < philo->arg.philo_count)
+		{
+			philo->id++;
+			_run_philo(philo);
 		}
 		else
-		{
-			philo->left_fork = first_fork;
-			pthread_create(&philo_thread, NULL, &routine, philo);
-		}
-		pthread_join(philo_thread, NULL);
-		usleep(1000);
-		free(philo);
+			waitpid(-1, NULL, 0);
+		kill(pid, SIGINT);
 	}
 }
 
 int	run_simulation(t_philo_arg *arg)
 {
-	t_philo	*first_philo;
+	t_philo	philo;
 
-	first_philo = malloc(sizeof(t_philo));
-	init_philo(first_philo, arg, 1);
-	_run_philo(first_philo, arg, &first_philo->right_fork);
+	init_philo(&philo, arg, 1);
+	_run_philo(&philo);
 	return (EXIT_SUCCESS);
 }
