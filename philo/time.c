@@ -1,28 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   time.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nlaerema <nlaerema@student.42lehavre.fr>	+#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 10:58:17 by nlaerema          #+#    #+#             */
-/*   Updated: 2023/12/17 19:09:51 by nlaerema         ###   ########.fr       */
+/*   Updated: 2023/12/17 21:50:48 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-static int	_arg_error(void)
+long	get_time(void)
 {
-	write(2, "Invalid Argument !\n", 19);
-	return (EXIT_FAILURE);
+	struct timeval	time;
+
+	gettimeofday(&time, NULL);
+	return (time.tv_sec * 1000 + time.tv_usec / 1000);
 }
 
-int	main(int argc, char *argv[])
+long	get_timestamp(t_philo *philo)
 {
-	t_philo_arg	arg;
+	return (get_time() - philo->start_time);
+}
 
-	if (init_arg(&arg, --argc, ++argv))
-		return (_arg_error());
-	return (run_simulation(&arg));
+long	get_time_it_die(t_philo *philo)
+{
+	return (philo->arg.time_to_die - (get_time() - philo->last_eat_time));
 }
