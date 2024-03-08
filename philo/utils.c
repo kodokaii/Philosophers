@@ -6,7 +6,7 @@
 /*   By: nlaerema <nlaerema@student.42lehavre.fr>	+#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 10:58:17 by nlaerema          #+#    #+#             */
-/*   Updated: 2023/12/18 00:58:12 by nlaerema         ###   ########.fr       */
+/*   Updated: 2024/03/08 17:56:18 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 t_bool	is_end(t_philo *philo)
 {
 	static t_bool			end = FT_FALSE;
-	static pthread_mutex_t	mutex;
+	static pthread_mutex_t	mutex = PTHREAD_MUTEX_INITIALIZER;
 	t_bool					is_dead;
 
 	is_dead = FT_FALSE;
