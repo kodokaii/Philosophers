@@ -6,7 +6,7 @@
 /*   By: nlaerema <nlaerema@student.42lehavre.fr>	+#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 10:58:17 by nlaerema          #+#    #+#             */
-/*   Updated: 2023/12/17 19:08:35 by nlaerema         ###   ########.fr       */
+/*   Updated: 2024/03/16 12:14:48 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,8 @@ static long	_get_nb(const char **str, int sign)
 		{
 			errno = ERANGE;
 			if (sign < 0)
-				return (INT_MIN);
-			return (INT_MAX);
+				return (LONG_MIN);
+			return (LONG_MAX);
 		}
 		(*str)++;
 	}
