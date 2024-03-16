@@ -6,7 +6,7 @@
 /*   By: nlaerema <nlaerema@student.42lehavre.fr>	+#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 10:58:17 by nlaerema          #+#    #+#             */
-/*   Updated: 2023/12/18 02:01:59 by nlaerema         ###   ########.fr       */
+/*   Updated: 2024/03/16 14:05:08 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,13 @@ void	*routine(void *ptr)
 	philo = ptr;
 	philo->start_time = get_time();
 	philo->last_eat_time = philo->start_time;
+	if (philo->id % 2)
+	{
+		_think(philo);
+		philo_wait(philo, philo->arg.time_to_eat);
+		_eat(philo);
+		_sleep(philo);
+	}
 	while (!is_end(philo) && philo->arg.eat_credit)
 	{
 		_think(philo);

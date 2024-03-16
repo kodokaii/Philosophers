@@ -3,7 +3,7 @@ NAME 		= philo
 CC 			= cc
 RM			= rm -f
 CLONE 		= git clone --depth=1
-CFLAGS 		+= -Wall -Wextra -Werror
+CFLAGS 		+= -Wall -Wextra -Werror -fsanitize=thread
 CLINKS		= -lpthread
 
 SRC 		= fork.c\
